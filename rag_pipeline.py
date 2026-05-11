@@ -36,6 +36,14 @@ Question:
 
 Answer:"""
 )
+EMBEDDINGS = HuggingFaceEmbeddings(
+    model_name=EMBEDDING_MODEL
+)
+
+VECTOR_STORE = Chroma(
+    persist_directory=str(CHROMA_DIR),
+    embedding_function=EMBEDDINGS,
+)
 
 
 def get_embeddings():
@@ -87,7 +95,7 @@ def answer_question(question):
 
     No previous chat messages are passed here, so the model has no chat memory.
     """
-    vector_store = get_vector_store()
+    vector_store = VECTOR_STORE
     retriever = vector_store.as_retriever(search_kwargs={"k": TOP_K})
     docs = retriever.invoke(question)
 
